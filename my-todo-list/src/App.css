@@ -1,0 +1,25 @@
+.to-do-list {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .to-do-list {
+        padding: 0.5rem;
+    }
+
+    .input-container input {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-buttons button {
+        flex: 1;
+        margin: 0 0.2rem;
+    }
+
+    .icon-style {
+        font-size: 1.2rem;
+    }
+}
