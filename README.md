@@ -42,7 +42,7 @@ bash
 Copy
 Edit
 npm start
-The app should now be running at http://localhost:3000.
+The app should now be running at http://localhost:5173.
 
 Usage
 Adding Tasks: Simply type your task in the input box and press "Add Task."
