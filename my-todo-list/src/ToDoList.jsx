@@ -31,8 +31,10 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                             if (e.key === 'Enter') saveEdit();
                         }}
                     />
-                    <button className="complete-button" onClick={saveEdit} aria-label="Save task">Save</button>
-                    <button className="clear-button" onClick={cancelEdit} aria-label="Cancel editing">Cancel</button>
+                    <div className="button-group">
+                        <button className="complete-button" onClick={saveEdit} aria-label="Save task">Save</button>
+                        <button className="clear-button" onClick={cancelEdit} aria-label="Cancel editing">Cancel</button>
+                    </div>
                 </>
             ) : (
                 <>
@@ -42,41 +44,48 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                     >
                         {task.description}
                     </span>
-                    <button
-                        className="edit-button"
-                        onClick={() => onEdit(task.id, task.description)}
-                        aria-label="Edit task"
-                    >
-                        <FaEdit className="icon-style" />
-                    </button>
-                    <button
-                        className="delete-button"
-                        onClick={() => onDelete(task.id)}
-                        aria-label="Delete task"
-                    >
-                        <FaTrash className="icon-style" />
-                    </button>
-                    <button
-                        className="complete-button"
-                        onClick={() => onComplete(task.id)}
-                        aria-label={task.completed ? "Mark as incomplete" : "Mark as complete"}
-                    >
-                        {task.completed ? <FaRedo className="icon-style" /> : <FaCheck className="icon-style" />}
-                    </button>
-                    <button
-                        className="move-button"
-                        onClick={moveToTop}
-                        aria-label="Move task to top"
-                    >
-                        <FaArrowUp className="icon-style" />
-                    </button>
-                    <button
-                        className="move-button"
-                        onClick={moveToBottom}
-                        aria-label="Move task to bottom"
-                    >
-                        <FaArrowDown className="icon-style" />
-                    </button>
+                    <div className="button-group">
+                        <button
+                            className="edit-button"
+                            onClick={() => onEdit(task.id, task.description)}
+                            aria-label="Edit task"
+                            title="Edit task" /* Tooltip added */
+                        >
+                            <FaEdit className="icon-style" />
+                        </button>
+                        <button
+                            className="delete-button"
+                            onClick={() => onDelete(task.id)}
+                            aria-label="Delete task"
+                            title="Delete task" /* Tooltip added */
+                        >
+                            <FaTrash className="icon-style" />
+                        </button>
+                        <button
+                            className="complete-button"
+                            onClick={() => onComplete(task.id)}
+                            aria-label={task.completed ? "Mark as incomplete" : "Mark as complete"}
+                            title={task.completed ? "Mark as incomplete" : "Mark as complete"} /* Tooltip added */
+                        >
+                            {task.completed ? <FaRedo className="icon-style" /> : <FaCheck className="icon-style" />}
+                        </button>
+                        <button
+                            className="move-button"
+                            onClick={moveToTop}
+                            aria-label="Move task to top"
+                            title="Move task to top" /* Tooltip added */
+                        >
+                            <FaArrowUp className="icon-style" />
+                        </button>
+                        <button
+                            className="move-button"
+                            onClick={moveToBottom}
+                            aria-label="Move task to bottom"
+                            title="Move task to bottom" /* Tooltip added */
+                        >
+                            <FaArrowDown className="icon-style" />
+                        </button>
+                    </div>
                 </>
             )}
         </li>
@@ -151,20 +160,24 @@ function CompletedTasksList({ tasks, onDelete, onComplete }) {
             >
                 {task.description || "No description available"}
             </span>
-            <button
-                className="delete-button"
-                onClick={() => onDelete(task.id)}
-                aria-label="Delete task"
-            >
-                <FaTrash className="icon-style" />
-            </button>
-            <button
-                className="complete-button"
-                onClick={() => onComplete(task.id)}
-                aria-label="Mark as incomplete"
-            >
-                <FaRedo className="icon-style" />
-            </button>
+            <div className="button-group">
+                <button
+                    className="delete-button"
+                    onClick={() => onDelete(task.id)}
+                    aria-label="Delete task"
+                    title="Delete task" /* Tooltip added */
+                >
+                    <FaTrash className="icon-style" />
+                </button>
+                <button
+                    className="complete-button"
+                    onClick={() => onComplete(task.id)}
+                    aria-label="Mark as incomplete"
+                    title="Mark as incomplete" /* Tooltip added */
+                >
+                    <FaRedo className="icon-style" />
+                </button>
+            </div>
         </li>
     ));
 }
@@ -295,93 +308,98 @@ function ToDoList() {
     }, [tasks]);
 
     return (
-        <div className="to-do-list">
-            <h1>To-Do List</h1>
-            <div className="input-container">
-                <input
-                    type="text"
-                    placeholder="Enter a task"
-                    value={newTask}
-                    onChange={(e) => setNewTask(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && addTask()}
-                    aria-label="New task input"
-                />
-                <button className="add-button" onClick={addTask} aria-label="Add task">Add Task</button>
-                <button className="clear-button" onClick={() => setTasks([])} aria-label="Clear all tasks">Clear All</button>
-            </div>
-            <div className="filter-buttons">
-                <button
-                    className={filter === "all" ? "active" : ""}
-                    onClick={() => handleFilterChange("all")}
-                    aria-label="Show all tasks"
-                >
-                    All
-                </button>
-                <button
-                    className={filter === "active" ? "active" : ""}
-                    onClick={() => handleFilterChange("active")}
-                    aria-label="Show active tasks"
-                >
-                    Active
-                </button>
-                <button
-                    className={filter === "completed" ? "active" : ""}
-                    onClick={() => handleFilterChange("completed")}
-                    aria-label="Show completed tasks"
-                >
-                    Completed
-                </button>
-                <button
-                    className="clear-completed-button"
-                    style={{ background: "black"}}
-                    onClick={clearCompletedTasks}
-                    aria-label="Clear completed tasks"
-                >
-                    Clear Completed
-                </button>
-            </div>
-            {filteredActiveTasks.length === 0 && filter !== "completed" ? (
-                <div className="empty-state">
-                    <FaRegSmileBeam className="empty-icon" aria-hidden="true" />
-                    <p>Your task list is empty! Add some tasks to get started.</p>
+        <div className="responsive-wrapper">
+            <div className="to-do-list">
+                <h1>To-Do List</h1>
+                <div className="input-container">
+                    <input
+                        type="text"
+                        placeholder="Enter a task"
+                        value={newTask}
+                        onChange={(e) => setNewTask(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && addTask()}
+                        aria-label="New task input"
+                    />
+                    <button className="add-button" onClick={addTask} aria-label="Add task">Add Task</button>
+                    <button className="clear-button" onClick={() => setTasks([])} aria-label="Clear all tasks">Clear All</button>
                 </div>
-            ) : (
-                filter !== "completed" && ( // Ensure active tasks are hidden when "completed" filter is selected
-                    <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-                        <SortableContext items={filteredActiveTasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
-                            <ol role="list">
-                                <h2>Active Tasks</h2>
-                                <ActiveTasksList
-                                    tasks={filteredActiveTasks}
-                                    onEdit={startEditingTask}
-                                    onDelete={deleteTask}
-                                    onComplete={taskCompleted}
-                                    editingTaskId={editingTaskId}
-                                    editingTaskText={editingTaskText}
-                                    setEditingTaskText={setEditingTaskText}
-                                    saveEdit={saveEditedTask}
-                                    cancelEdit={cancelEditing}
-                                    moveTaskToTop={moveTaskToTop}
-                                    moveTaskToBottom={moveTaskToBottom}
-                                />
-                            </ol>
-                        </SortableContext>
-                    </DndContext>
-                )
-            )}
+                <div className="filter-buttons">
+                    <button
+                        className={filter === "all" ? "active" : ""}
+                        onClick={() => handleFilterChange("all")}
+                        aria-label="Show all tasks"
+                        title="Show all tasks" /* Tooltip added */
+                    >
+                        All
+                    </button>
+                    <button
+                        className={filter === "active" ? "active" : ""}
+                        onClick={() => handleFilterChange("active")}
+                        aria-label="Show active tasks"
+                        title="Show active tasks" /* Tooltip added */
+                    >
+                        Active
+                    </button>
+                    <button
+                        className={filter === "completed" ? "active" : ""}
+                        onClick={() => handleFilterChange("completed")}
+                        aria-label="Show completed tasks"
+                        title="Show completed tasks" /* Tooltip added */
+                    >
+                        Completed
+                    </button>
+                    <button
+                        className={filter === "clear" ? "active" : ""}
+                        onClick={clearCompletedTasks}
+                        aria-label="Clear completed tasks"
+                        title="Clear completed tasks" /* Tooltip added */
+                    >
+                        Clear Completed
+                    </button>
+                </div>
+                {filteredActiveTasks.length === 0 && filter !== "completed" ? (
+                    <div className="empty-state">
+                        <FaRegSmileBeam className="empty-icon" aria-hidden="true" />
+                        <p>Your task list is empty! Add some tasks to get started.</p>
+                    </div>
+                ) : (
+                    filter !== "completed" && ( // Ensure active tasks are hidden when "completed" filter is selected
+                        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+                            <SortableContext items={filteredActiveTasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
+                                <ol role="list">
+                                    <h2>Active Tasks</h2>
+                                    <ActiveTasksList
+                                        tasks={filteredActiveTasks}
+                                        onEdit={startEditingTask}
+                                        onDelete={deleteTask}
+                                        onComplete={taskCompleted}
+                                        editingTaskId={editingTaskId}
+                                        editingTaskText={editingTaskText}
+                                        setEditingTaskText={setEditingTaskText}
+                                        saveEdit={saveEditedTask}
+                                        cancelEdit={cancelEditing}
+                                        moveTaskToTop={moveTaskToTop}
+                                        moveTaskToBottom={moveTaskToBottom}
+                                    />
+                                </ol>
+                            </SortableContext>
+                        </DndContext>
+                    )
+                )}
 
-            {filteredCompletedTasks.length > 0 && (filter === "all" || filter === "completed") && (
-                <>
-                    <h2>Completed Tasks</h2>
-                    <ol role="list">
-                        <CompletedTasksList
-                            tasks={filteredCompletedTasks}
-                            onDelete={deleteTask}
-                            onComplete={taskCompleted}
-                        />
-                    </ol>
-                </>
-            )}
+                {filteredCompletedTasks.length > 0 && (filter === "all" || filter === "completed") && (
+                    <>
+                        <h2>Completed Tasks</h2>
+                        <ol role="list">
+                            <CompletedTasksList
+                                tasks={filteredCompletedTasks}
+                                onDelete={deleteTask}
+                                onComplete={taskCompleted}
+                            />
+                        </ol>
+                    </>
+                )}
+            </div>
         </div>
     );
 }
