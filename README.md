@@ -33,4 +33,4 @@ LocalStorage
 📄 License
 MIT
 
-![todo list preview](https://github.com/user-attachments/assets/3d3e4143-f6b9-4d83-afd9-ad7d22762878)
+![image](https://github.com/user-attachments/assets/ca7edc95-3af5-48dc-b5d7-dd2a4ae3cf81)
