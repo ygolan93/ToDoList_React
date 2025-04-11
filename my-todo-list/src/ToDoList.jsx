@@ -49,7 +49,7 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                             className="edit-button"
                             onClick={() => onEdit(task.id, task.description)}
                             aria-label="Edit task"
-                            title="Edit task" /* Tooltip added */
+                            title="Edit task"
                         >
                             <FaEdit className="icon-style" />
                         </button>
@@ -57,7 +57,7 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                             className="delete-button"
                             onClick={() => onDelete(task.id)}
                             aria-label="Delete task"
-                            title="Delete task" /* Tooltip added */
+                            title="Delete task"
                         >
                             <FaTrash className="icon-style" />
                         </button>
@@ -65,7 +65,7 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                             className="complete-button"
                             onClick={() => onComplete(task.id)}
                             aria-label={task.completed ? "Mark as incomplete" : "Mark as complete"}
-                            title={task.completed ? "Mark as incomplete" : "Mark as complete"} /* Tooltip added */
+                            title={task.completed ? "Mark as incomplete" : "Mark as complete"}
                         >
                             {task.completed ? <FaRedo className="icon-style" /> : <FaCheck className="icon-style" />}
                         </button>
@@ -73,7 +73,7 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                             className="move-button"
                             onClick={moveToTop}
                             aria-label="Move task to top"
-                            title="Move task to top" /* Tooltip added */
+                            title="Move task to top"
                         >
                             <FaArrowUp className="icon-style" />
                         </button>
@@ -81,7 +81,7 @@ function TaskItem({ task, index, onEdit, onDelete, onComplete, isEditing, editin
                             className="move-button"
                             onClick={moveToBottom}
                             aria-label="Move task to bottom"
-                            title="Move task to bottom" /* Tooltip added */
+                            title="Move task to bottom"
                         >
                             <FaArrowDown className="icon-style" />
                         </button>
@@ -165,7 +165,7 @@ function CompletedTasksList({ tasks, onDelete, onComplete }) {
                     className="delete-button"
                     onClick={() => onDelete(task.id)}
                     aria-label="Delete task"
-                    title="Delete task" /* Tooltip added */
+                    title="Delete task"
                 >
                     <FaTrash className="icon-style" />
                 </button>
@@ -173,7 +173,7 @@ function CompletedTasksList({ tasks, onDelete, onComplete }) {
                     className="complete-button"
                     onClick={() => onComplete(task.id)}
                     aria-label="Mark as incomplete"
-                    title="Mark as incomplete" /* Tooltip added */
+                    title="Mark as incomplete"
                 >
                     <FaRedo className="icon-style" />
                 </button>
@@ -195,25 +195,11 @@ CompletedTasksList.propTypes = {
 };
 
 function ToDoList() {
-    const [tasks, setTasks] = useLocalStorage('tasks', [], () => {
-        const savedTasks = localStorage.getItem('tasks');
-        if (savedTasks) {
-            const parsed = JSON.parse(savedTasks);
-            return parsed.map(task => ({
-                ...task,
-                description: task.description || "No description available"
-            }));
-        }
-        return [];
-    });
+    const [tasks, setTasks] = useLocalStorage('tasks', []);
     const [newTask, setNewTask] = useState("");
     const [editingTaskId, setEditingTaskId] = useState(null);
     const [editingTaskText, setEditingTaskText] = useState("");
     const [filter, setFilter] = useState("all");
-
-    useEffect(() => {
-        console.log("ToDoList component mounted");
-    }, []);
 
     const addTask = useCallback(() => {
         if (newTask.trim() !== "") {
@@ -232,37 +218,6 @@ function ToDoList() {
         ));
     }, [tasks, setTasks]);
 
-    const startEditingTask = useCallback((id, text) => {
-        setEditingTaskId(id);
-        setEditingTaskText(text);
-    }, []);
-
-    const saveEditedTask = useCallback(() => {
-        if (editingTaskText.trim() !== "") {
-            setTasks(tasks.map((task) =>
-                task.id === editingTaskId ? { ...task, description: editingTaskText.trim() } : task
-            ));
-            setEditingTaskId(null);
-            setEditingTaskText("");
-        }
-    }, [editingTaskId, editingTaskText, tasks, setTasks]);
-
-    const cancelEditing = useCallback(() => {
-        setEditingTaskId(null);
-        setEditingTaskText("");
-    }, []);
-
-    const onDragEnd = useCallback(({ active, over }) => {
-        if (!over) return;
-        if (active.id !== over.id) {
-            setTasks((tasks) => {
-                const oldIndex = tasks.findIndex((task) => task.id === active.id);
-                const newIndex = tasks.findIndex((task) => task.id === over.id);
-                return arrayMove(tasks, oldIndex, newIndex);
-            });
-        }
-    }, [setTasks]);
-
     const handleFilterChange = useCallback((newFilter) => {
         setFilter(newFilter);
     }, []);
@@ -271,6 +226,7 @@ function ToDoList() {
         setTasks(tasks.filter((task) => !task.completed));
     }, [tasks, setTasks]);
 
+    // Function to move a task to the top of the list
     const moveTaskToTop = useCallback((id) => {
         setTasks((tasks) => {
             const taskIndex = tasks.findIndex((task) => task.id === id);
@@ -285,6 +241,7 @@ function ToDoList() {
         });
     }, [setTasks]);
 
+    // Function to move a task to the bottom of the list
     const moveTaskToBottom = useCallback((id) => {
         setTasks((tasks) => {
             const taskIndex = tasks.findIndex((task) => task.id === id);
@@ -299,13 +256,8 @@ function ToDoList() {
         });
     }, [setTasks]);
 
-    const filteredActiveTasks = useMemo(() => {
-        return tasks.filter((task) => !task.completed);
-    }, [tasks]);
-
-    const filteredCompletedTasks = useMemo(() => {
-        return tasks.filter((task) => task.completed);
-    }, [tasks]);
+    const filteredActiveTasks = useMemo(() => tasks.filter((task) => !task.completed), [tasks]);
+    const filteredCompletedTasks = useMemo(() => tasks.filter((task) => task.completed), [tasks]);
 
     return (
         <div className="responsive-wrapper">
@@ -328,7 +280,7 @@ function ToDoList() {
                         className={filter === "all" ? "active" : ""}
                         onClick={() => handleFilterChange("all")}
                         aria-label="Show all tasks"
-                        title="Show all tasks" /* Tooltip added */
+                        title="Show all tasks"
                     >
                         All
                     </button>
@@ -336,7 +288,7 @@ function ToDoList() {
                         className={filter === "active" ? "active" : ""}
                         onClick={() => handleFilterChange("active")}
                         aria-label="Show active tasks"
-                        title="Show active tasks" /* Tooltip added */
+                        title="Show active tasks"
                     >
                         Active
                     </button>
@@ -344,7 +296,7 @@ function ToDoList() {
                         className={filter === "completed" ? "active" : ""}
                         onClick={() => handleFilterChange("completed")}
                         aria-label="Show completed tasks"
-                        title="Show completed tasks" /* Tooltip added */
+                        title="Show completed tasks"
                     >
                         Completed
                     </button>
@@ -352,7 +304,7 @@ function ToDoList() {
                         className={filter === "clear" ? "active" : ""}
                         onClick={clearCompletedTasks}
                         aria-label="Clear completed tasks"
-                        title="Clear completed tasks" /* Tooltip added */
+                        title="Clear completed tasks"
                     >
                         Clear Completed
                     </button>
@@ -363,21 +315,24 @@ function ToDoList() {
                         <p>Your task list is empty! Add some tasks to get started.</p>
                     </div>
                 ) : (
-                    filter !== "completed" && ( // Ensure active tasks are hidden when "completed" filter is selected
-                        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+                    filter !== "completed" && (
+                        <DndContext collisionDetection={closestCenter}>
                             <SortableContext items={filteredActiveTasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
-                                <ol role="list">
-                                    <h2>Active Tasks</h2>
+                                <ol>
                                     <ActiveTasksList
                                         tasks={filteredActiveTasks}
-                                        onEdit={startEditingTask}
+                                        onEdit={(id, text) => setEditingTaskId(id) || setEditingTaskText(text)}
                                         onDelete={deleteTask}
                                         onComplete={taskCompleted}
                                         editingTaskId={editingTaskId}
                                         editingTaskText={editingTaskText}
                                         setEditingTaskText={setEditingTaskText}
-                                        saveEdit={saveEditedTask}
-                                        cancelEdit={cancelEditing}
+                                        saveEdit={() => {
+                                            setTasks(tasks.map(task => task.id === editingTaskId ? { ...task, description: editingTaskText } : task));
+                                            setEditingTaskId(null);
+                                            setEditingTaskText("");
+                                        }}
+                                        cancelEdit={() => setEditingTaskId(null)}
                                         moveTaskToTop={moveTaskToTop}
                                         moveTaskToBottom={moveTaskToBottom}
                                     />
@@ -386,18 +341,17 @@ function ToDoList() {
                         </DndContext>
                     )
                 )}
-
                 {filteredCompletedTasks.length > 0 && (filter === "all" || filter === "completed") && (
-                    <>
+                    <div>
                         <h2>Completed Tasks</h2>
-                        <ol role="list">
+                        <ol>
                             <CompletedTasksList
                                 tasks={filteredCompletedTasks}
                                 onDelete={deleteTask}
                                 onComplete={taskCompleted}
                             />
                         </ol>
-                    </>
+                    </div>
                 )}
             </div>
         </div>
