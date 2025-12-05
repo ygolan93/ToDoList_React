@@ -92,7 +92,7 @@ button:hover {
 }
 
 .delete-button {
-  background-color: rgb(255, 93, 93);
+  background-color: rgb(250, 63, 63);
   color: white;
 }
 
@@ -126,6 +126,69 @@ button:hover {
 .edit-button:hover {
   background-color: rgb(255, 245, 153);
 }
+
+
+
+.task-date {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  margin-left: auto;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.completed-icon {
+  color: #48bb78; 
+  font-size: 1.2rem;
+}
+
+
+
+.task-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.task-date {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  margin-top: 4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.task-content-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 20px;
+  overflow: hidden;
+}
+
+.task-content-inline .text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-content-inline .task-date {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  white-space: nowrap;
+}
+
+.completed-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+
 
 /* ========================= Input ========================= */
 .input-container {
@@ -185,6 +248,7 @@ ol {
 li {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 15px;
   background-color: #2d3748;
@@ -286,7 +350,13 @@ li:hover {
   }
 
   .text {
-    font-size: 1.2rem;
+    flex: 1;
+    font-size: 1rem;
+    color: var(--text-color);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
   }
 
   .button-group {
@@ -371,5 +441,21 @@ li:hover {
   .responsive-wrapper {
     transform: scale(1.1); /* Increase scale by 110% for desktop */
     transform-origin: top center; /* Ensure scaling is centered */
+  }
+}
+
+
+@media (max-width: 500px) {
+  .task-content-inline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-content-inline .text {
+    width: 100%;
+  }
+
+  .task-content-inline .task-date {
+    align-self: flex-end;
   }
 }
